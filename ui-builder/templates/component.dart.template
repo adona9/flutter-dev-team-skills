@@ -1,0 +1,65 @@
+// TEMPLATE: Copy, rename ComponentName, implement body.
+// Checklist before committing:
+// [ ] Uses only AppColors / AppSpacing / AppTypography tokens — no hardcoded values
+// [ ] const constructor where possible
+// [ ] Tappable areas are minimum 44×44 logical pixels
+// [ ] Has semanticLabel on images, tooltip on icon-only buttons
+// [ ] Works in dark theme (primary target) and light theme (secondary)
+
+import 'package:flutter/material.dart';
+// import 'package:your_app/design_system/tokens/colors.dart';
+// import 'package:your_app/design_system/tokens/spacing.dart';
+// import 'package:your_app/design_system/tokens/typography.dart';
+
+class ComponentName extends StatelessWidget {
+  // [CONFIGURE] Define props — keep them minimal and focused
+  final String label;
+  final VoidCallback? onTap;
+
+  const ComponentName({
+    required this.label,
+    this.onTap,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // [CONFIGURE] Implement widget tree
+    // Use Theme.of(context).textTheme / colorScheme for M3 integration
+    // Use AppColors / AppSpacing for custom tokens
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(label),
+    );
+  }
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+// Always include a preview showing common states
+class _ComponentNamePreview extends StatelessWidget {
+  const _ComponentNamePreview();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ComponentName(label: 'Default'),
+            const SizedBox(height: AppSpacing.lg),
+            ComponentName(label: 'With tap', onTap: () {}),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+void main() => runApp(
+  const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: _ComponentNamePreview(),
+  ),
+);
