@@ -1,0 +1,12 @@
+{
+  "name": "flutter-dev-team",
+  "version": "1.0.0",
+  "description": "Flutter development team skills for Claude Code",
+  "skills": [
+    "flutter-context",
+    "flutter-architect",
+    "ui-builder",
+    "test-writer",
+    "pr-review"
+  ]
+}

@@ -7,6 +7,7 @@
 #   echo "MAC_MINI_USER=yourusername" >> ~/.flutter_build_config
 
 set -e
+PLUGIN_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
 # ── Config ────────────────────────────────────────────────────────────────────
 CONFIG_FILE="$HOME/.flutter_build_config"
@@ -19,7 +20,7 @@ if [ -f "$CONFIG_FILE" ]; then
   source "$CONFIG_FILE"
 else
   echo "❌ Config not found: $CONFIG_FILE"
-  echo "   Run: bash scripts/mac_setup.sh <mac-ip> <mac-username>"
+  echo "   Run: bash \"$PLUGIN_ROOT/flutter-context/scripts/mac_setup.sh\" <mac-ip> <mac-username>"
   exit 1
 fi
 

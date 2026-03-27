@@ -293,7 +293,7 @@ testWidgets('FeedScreen shows posts when loaded', (tester) async {
 
 Run before every release build:
 ```bash
-bash scripts/check_compliance.sh
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/check_compliance.sh"
 ```
 
 **iOS non-negotiables:**
@@ -314,19 +314,19 @@ bash scripts/check_compliance.sh
 ### One-time Mac Mini setup
 ```bash
 # Run once from Ubuntu to configure the Mac Mini
-bash scripts/mac_setup.sh <mac-mini-ip> <mac-username>
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/mac_setup.sh" <mac-mini-ip> <mac-username>
 ```
 See `references/mac-setup-guide.md` for what this installs.
 
 ### Daily build workflow
 ```bash
 # From Ubuntu — builds iOS on Mac Mini and installs to connected iPhone
-bash scripts/build_ios.sh
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/build_ios.sh"
 
 # With options
-bash scripts/build_ios.sh --release          # Release build (for TestFlight)
-bash scripts/build_ios.sh --no-install       # Build only, don't install
-bash scripts/build_ios.sh --ip 192.168.1.x  # Override Mac Mini IP
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/build_ios.sh" --release          # Release build (for TestFlight)
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/build_ios.sh" --no-install       # Build only, don't install
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/build_ios.sh" --ip 192.168.1.x  # Override Mac Mini IP
 ```
 
 Mac Mini IP and username stored in `~/.flutter_build_config` (never committed).

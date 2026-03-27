@@ -4,13 +4,14 @@
 # Run from Ubuntu. SSH key auth must already be set up.
 
 set -e
+PLUGIN_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
 MAC_IP="$1"
 MAC_USER="$2"
 
 if [ -z "$MAC_IP" ] || [ -z "$MAC_USER" ]; then
-  echo "Usage: bash scripts/mac_setup.sh <mac-mini-ip> <mac-username>"
-  echo "Example: bash scripts/mac_setup.sh 192.168.1.42 john"
+  echo "Usage: bash \"$PLUGIN_ROOT/flutter-context/scripts/mac_setup.sh\" <mac-mini-ip> <mac-username>"
+  echo "Example: bash \"$PLUGIN_ROOT/flutter-context/scripts/mac_setup.sh\" 192.168.1.42 john"
   exit 1
 fi
 
@@ -115,6 +116,6 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "  ✅ Mac Mini is ready for Flutter iOS builds"
 echo ""
 echo "  Connect your iPhone to the Mac Mini via USB, then:"
-echo "  bash scripts/build_ios.sh"
+echo "  bash \"$PLUGIN_ROOT/flutter-context/scripts/build_ios.sh\""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""

@@ -35,7 +35,7 @@ accessible from Ubuntu via SSH.
 Once SSH works, from your project directory on Ubuntu:
 
 ```bash
-bash scripts/mac_setup.sh 192.168.x.x yourusername
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/mac_setup.sh" 192.168.x.x yourusername
 ```
 
 This installs: Homebrew, Flutter, CocoaPods, ios-deploy, accepts Xcode license.
@@ -52,10 +52,10 @@ On iPhone: tap "Trust" when prompted.
 ### Build and install from Ubuntu
 ```bash
 # Debug build — install directly to iPhone
-bash scripts/build_ios.sh
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/build_ios.sh"
 
 # Release build — for TestFlight
-bash scripts/build_ios.sh --release
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/build_ios.sh" --release
 ```
 
 ### If Mac Mini IP changes (DHCP)

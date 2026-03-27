@@ -29,11 +29,11 @@ directory layout.
 Run before every PR merge and every iOS build:
 
 ```bash
-bash scripts/check_coverage.sh
+bash "${CLAUDE_PLUGIN_ROOT}/test-writer/scripts/check_coverage.sh"
 ```
 
-Threshold: **80% line coverage**. Configurable in `scripts/check_coverage.sh`.
-The build pipeline in `flutter-context/scripts/build_ios.sh` calls this
+Threshold: **80% line coverage**. Configurable in `${CLAUDE_PLUGIN_ROOT}/test-writer/scripts/check_coverage.sh`.
+The build pipeline in `${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/build_ios.sh` calls this
 automatically before building — fix coverage before the build runs.
 
 ---

@@ -1,0 +1,116 @@
+// {{FeatureName}}NotifierTest
+// Replace all {{...}} placeholders before using.
+// Run: flutter test test/unit/features/{{feature_name}}/notifiers/{{feature_name}}_notifier_test.dart
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+import 'package:my_app/features/{{feature_name}}/data/repositories/{{feature_name}}_repository_impl.dart';
+import 'package:my_app/features/{{feature_name}}/domain/entities/{{entity_name}}.dart';
+import 'package:my_app/features/{{feature_name}}/domain/repositories/{{feature_name}}_repository.dart';
+import 'package:my_app/features/{{feature_name}}/presentation/providers/{{feature_name}}_notifier.dart';
+
+// ── Mocks ─────────────────────────────────────────────────────────────────────
+class Mock{{FeatureName}}Repository extends Mock implements {{FeatureName}}Repository {}
+
+// ── Test data ─────────────────────────────────────────────────────────────────
+class Mock{{FeatureName}}Data {
+  static final List<{{EntityName}}> items = [
+    {{EntityName}}(
+      id: 'test-id-1',
+      // TODO: fill required fields
+    ),
+  ];
+
+  static final {{EntityName}} singleItem = items.first;
+}
+
+void main() {
+  late Mock{{FeatureName}}Repository mockRepository;
+  late ProviderContainer container;
+
+  setUp(() {
+    mockRepository = Mock{{FeatureName}}Repository();
+    container = ProviderContainer(
+      overrides: [
+        {{featureName}}RepositoryProvider.overrideWithValue(mockRepository),
+      ],
+    );
+    addTearDown(container.dispose);
+  });
+
+  // ── build() — initial load ─────────────────────────────────────────────────
+  group('build', () {
+    test('returns items on success', () async {
+      when(() => mockRepository.get{{FeatureName}}s())
+          .thenAnswer((_) async => Mock{{FeatureName}}Data.items);
+
+      final result = await container.read({{featureName}}NotifierProvider.future);
+
+      expect(result, equals(Mock{{FeatureName}}Data.items));
+      verify(() => mockRepository.get{{FeatureName}}s()).called(1);
+    });
+
+    test('propagates error on failure', () async {
+      when(() => mockRepository.get{{FeatureName}}s())
+          .thenThrow(Exception('network error'));
+
+      final notifier = container.read({{featureName}}NotifierProvider.notifier);
+      await container.read({{featureName}}NotifierProvider.future).catchError((_) => []);
+
+      expect(
+        container.read({{featureName}}NotifierProvider),
+        isA<AsyncError<List<{{EntityName}}>>>(),
+      );
+    });
+
+    test('returns empty list when no items exist', () async {
+      when(() => mockRepository.get{{FeatureName}}s())
+          .thenAnswer((_) async => []);
+
+      final result = await container.read({{featureName}}NotifierProvider.future);
+
+      expect(result, isEmpty);
+    });
+  });
+
+  // ── Primary action — add example below and expand ──────────────────────────
+  group('{{primaryAction}}', () {
+    setUp(() {
+      // Pre-load state before testing actions
+      when(() => mockRepository.get{{FeatureName}}s())
+          .thenAnswer((_) async => Mock{{FeatureName}}Data.items);
+    });
+
+    test('optimistic update succeeds', () async {
+      when(() => mockRepository.{{primaryAction}}(any()))
+          .thenAnswer((_) async {});
+
+      await container.read({{featureName}}NotifierProvider.future);
+      await container
+          .read({{featureName}}NotifierProvider.notifier)
+          .{{primaryAction}}(Mock{{FeatureName}}Data.singleItem.id);
+
+      // TODO: assert expected state change
+    });
+
+    test('reverts optimistic update on failure', () async {
+      when(() => mockRepository.{{primaryAction}}(any()))
+          .thenThrow(Exception('network error'));
+
+      await container.read({{featureName}}NotifierProvider.future);
+      final stateBefore = container.read({{featureName}}NotifierProvider).value!;
+
+      await expectLater(
+        () => container
+            .read({{featureName}}NotifierProvider.notifier)
+            .{{primaryAction}}(Mock{{FeatureName}}Data.singleItem.id),
+        throwsException,
+      );
+
+      final stateAfter = container.read({{featureName}}NotifierProvider).value!;
+      expect(stateAfter, equals(stateBefore));
+    });
+  });
+}

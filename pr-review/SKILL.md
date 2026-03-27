@@ -28,9 +28,9 @@ consistency, coverage, safety. This skill is the agent layer.
 ## When to Run
 
 ```bash
-bash scripts/pr_review.sh              # full review of all changed files
-bash scripts/pr_review.sh --quick      # layers 1-2 only (fast, pre-commit)
-bash scripts/pr_review.sh --file path  # review a single file
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/pr_review.sh"              # full review of all changed files
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/pr_review.sh" --quick      # layers 1-2 only (fast, pre-commit)
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/pr_review.sh" --file path  # review a single file
 ```
 
 Run automatically via git hook — see `references/git-hooks-setup.md`.
@@ -57,7 +57,7 @@ all scripts pass and attempts to find what the scripts missed.
 ## Layer 1: Static Analysis (deterministic)
 
 ```bash
-bash scripts/layer1_static.sh
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/layer1_static.sh"
 ```
 
 Checks:
@@ -110,7 +110,7 @@ fi
 ## Layer 2: Architecture Guard (deterministic)
 
 ```bash
-bash scripts/layer2_architecture.sh [changed_files...]
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/layer2_architecture.sh" [changed_files...]
 ```
 
 Checks every changed `.dart` file for:
@@ -229,12 +229,12 @@ exit 0
 Delegates directly to `test-writer`'s script:
 
 ```bash
-bash ../test-writer/scripts/check_coverage.sh --threshold 80
+bash "${CLAUDE_PLUGIN_ROOT}/test-writer/scripts/check_coverage.sh" --threshold 80
 ```
 
 Or if installed locally:
 ```bash
-bash scripts/layer3_coverage.sh
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/layer3_coverage.sh"
 ```
 
 A new feature with no tests is an automatic BLOCK.
@@ -246,7 +246,7 @@ percentage below 80%.
 ## Layer 4: Security Scan (deterministic)
 
 ```bash
-bash scripts/layer4_security.sh
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/layer4_security.sh"
 ```
 
 ```bash
@@ -348,13 +348,14 @@ The agent runs this review and appends results to the final report.
 ## Full Review Script
 
 ```bash
-bash scripts/pr_review.sh
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/pr_review.sh"
 ```
 
 ```bash
 #!/bin/bash
 # scripts/pr_review.sh — Full PR review orchestrator
 set -e
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 QUICK=false
 TARGET_FILE=""
@@ -390,12 +391,12 @@ run_layer() {
   fi
 }
 
-run_layer "Layer 1: Static Analysis"  "scripts/layer1_static.sh"
-run_layer "Layer 2: Architecture"     "scripts/layer2_architecture.sh"
+run_layer "Layer 1: Static Analysis"  "${SCRIPT_DIR}/layer1_static.sh"
+run_layer "Layer 2: Architecture"     "${SCRIPT_DIR}/layer2_architecture.sh"
 
 if [ "$QUICK" = false ]; then
-  run_layer "Layer 3: Coverage"       "scripts/layer3_coverage.sh"
-  run_layer "Layer 4: Security"       "scripts/layer4_security.sh"
+  run_layer "Layer 3: Coverage"       "${SCRIPT_DIR}/layer3_coverage.sh"
+  run_layer "Layer 4: Security"       "${SCRIPT_DIR}/layer4_security.sh"
 fi
 
 echo ""

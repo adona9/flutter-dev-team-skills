@@ -17,7 +17,7 @@ cat > .git/hooks/pre-push << 'EOF'
 # To bypass in emergencies: git push --no-verify
 
 echo "Running PR review before push..."
-bash scripts/pr_review.sh
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/pr_review.sh"
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ]; then
@@ -56,7 +56,7 @@ STAGED=$(git diff --cached --name-only | grep "\.dart$" || true)
 [ -z "$STAGED" ] && exit 0
 
 echo "Quick review (static + architecture)..."
-bash scripts/pr_review.sh --quick
+bash "${CLAUDE_PLUGIN_ROOT}/pr-review/scripts/pr_review.sh" --quick
 EOF
 
 chmod +x .git/hooks/pre-commit
@@ -97,6 +97,6 @@ After cloning:
 ```bash
 git config core.hooksPath .githooks
 chmod +x .githooks/*
-bash scripts/mac_setup.sh <mac-ip> <mac-user>
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-context/scripts/mac_setup.sh" <mac-ip> <mac-user>
 ```
 ```

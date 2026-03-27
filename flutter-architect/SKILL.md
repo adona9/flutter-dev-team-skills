@@ -26,7 +26,7 @@ naming conventions, approved packages, and build pipeline from there.
 
 Run the deterministic check first:
 ```bash
-bash scripts/validate_spec.sh
+bash "${CLAUDE_PLUGIN_ROOT}/flutter-architect/scripts/validate_spec.sh"
 ```
 
 ### Required fields for every feature
