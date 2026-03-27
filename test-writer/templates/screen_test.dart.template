@@ -1,0 +1,121 @@
+// TEMPLATE: Screen test with mandatory 4-state coverage.
+// Replace: FeatureScreen, featureNotifierProvider, MockFeatureNotifier,
+//          FeedSkeleton, ErrorView, EmptyFeatureView, FeatureContent
+// Delete this comment block before committing.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+// [CONFIGURE] Import your screen, notifier, provider, and mock data
+// import 'package:your_app/features/feature/presentation/screens/feature_screen.dart';
+// import 'package:your_app/features/feature/presentation/providers/feature_providers.dart';
+// import '../../helpers/mock_data.dart';
+// import '../../helpers/mock_notifiers.dart';
+
+Widget buildTestApp(List<Override> overrides, Widget screen) {
+  return ProviderScope(
+    overrides: overrides,
+    child: MaterialApp(
+      theme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
+      home: screen,
+    ),
+  );
+}
+
+void main() {
+  group('FeatureScreen', () {
+    // ── State 1: Loading ────────────────────────────────────────────────────
+    testWidgets('shows skeleton while loading', (tester) async {
+      await tester.pumpWidget(buildTestApp(
+        [
+          featureNotifierProvider.overrideWith(
+            () => MockFeatureNotifier(state: const AsyncLoading()),
+          ),
+        ],
+        const FeatureScreen(),
+      ));
+      await tester.pump(); // one frame — catch loading state before it resolves
+
+      expect(find.byType(FeatureSkeleton), findsOneWidget);
+      expect(find.byType(FeatureContent), findsNothing);
+    });
+
+    // ── State 2: Error ──────────────────────────────────────────────────────
+    testWidgets('shows error view with retry button on failure', (tester) async {
+      await tester.pumpWidget(buildTestApp(
+        [
+          featureNotifierProvider.overrideWith(
+            () => MockFeatureNotifier(
+              state: AsyncError(Exception('Network error'), StackTrace.empty),
+            ),
+          ),
+        ],
+        const FeatureScreen(),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ErrorView), findsOneWidget);
+      expect(find.text('Try again'), findsOneWidget);
+      expect(find.byType(FeatureSkeleton), findsNothing);
+    });
+
+    // ── State 3: Empty ──────────────────────────────────────────────────────
+    testWidgets('shows empty state when no data', (tester) async {
+      await tester.pumpWidget(buildTestApp(
+        [
+          featureNotifierProvider.overrideWith(
+            () => MockFeatureNotifier(state: const AsyncData([])),
+          ),
+        ],
+        const FeatureScreen(),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EmptyFeatureView), findsOneWidget);
+      expect(find.byType(FeatureContent), findsNothing);
+    });
+
+    // ── State 4: Data ───────────────────────────────────────────────────────
+    testWidgets('shows content when data loaded', (tester) async {
+      final items = MockData.featureItems; // [CONFIGURE] use your mock data
+
+      await tester.pumpWidget(buildTestApp(
+        [
+          featureNotifierProvider.overrideWith(
+            () => MockFeatureNotifier(state: AsyncData(items)),
+          ),
+        ],
+        const FeatureScreen(),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FeatureContent), findsOneWidget);
+      expect(find.byType(FeatureSkeleton), findsNothing);
+      expect(find.byType(ErrorView), findsNothing);
+      expect(find.byType(EmptyFeatureView), findsNothing);
+    });
+
+    // ── Interactions ────────────────────────────────────────────────────────
+    testWidgets('retry button calls refresh', (tester) async {
+      final mockNotifier = MockFeatureNotifier(
+        state: AsyncError(Exception('error'), StackTrace.empty),
+      );
+
+      await tester.pumpWidget(buildTestApp(
+        [featureNotifierProvider.overrideWith(() => mockNotifier)],
+        const FeatureScreen(),
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Try again'));
+      await tester.pump();
+
+      verify(() => mockNotifier.refresh()).called(1);
+    });
+
+    // [CONFIGURE] Add feature-specific interaction tests below
+    // e.g. scroll to load more, tap item navigates, etc.
+  });
+}
