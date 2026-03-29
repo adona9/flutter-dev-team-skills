@@ -39,11 +39,12 @@ echo "[ 2/3 ] Filtering generated files from coverage..."
 
 # Files to exclude from coverage (generated code, mocks, templates)
 EXCLUDE_PATTERNS=(
-  "*.g.dart"           # json_serializable generated
-  "*.freezed.dart"     # freezed generated
-  "*.mocks.dart"       # mockito/mocktail generated
-  "lib/main.dart"      # entry point bootstrap only
-  "lib/app.dart"       # theme config, no business logic
+  "*.g.dart"                              # json_serializable / Drift generated
+  "*.freezed.dart"                        # freezed generated
+  "*.mocks.dart"                          # mockito/mocktail generated
+  "lib/main.dart"                         # entry point bootstrap only
+  "lib/app.dart"                          # theme config, no business logic
+  "lib/core/database/user_database.dart"  # Drift schema declarations + fs factory
 )
 
 FILTERED_LCOV="coverage/lcov_filtered.info"
