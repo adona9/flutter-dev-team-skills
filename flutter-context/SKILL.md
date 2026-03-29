@@ -252,6 +252,10 @@ Agent must NOT add packages outside this list without asking the user first.
 | `shared_preferences` | Simple local storage |
 | `flutter_secure_storage` | Sensitive data (tokens) |
 | `equatable` | Value equality in domain layer |
+| `drift` | Local relational database (SQLite ORM) |
+| `sqlite3_flutter_libs` | SQLite native binaries (required by drift) |
+| `path_provider` | Platform-specific file/directory paths |
+| `path` | Path string manipulation |
 
 **Before adding any new package:**
 1. Confirm it's not already achievable with an approved package
